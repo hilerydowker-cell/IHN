@@ -74,10 +74,10 @@
             stepIndex: 0, 
             impedanceCount: 0,
             answers: {
-                objectLocked: "",
-                roomSound: "",
-                bodyTension: "",
-                kineticAction: ""
+                timelineFriction: "",
+                ambientFriction: "",
+                densityCheck: "",
+                coreConductance: ""
             }
         };
 
@@ -92,11 +92,12 @@
         const futureWords = /\b(tomorrow|next week|will happen|what if|going to|hope|plan)\b/i;
         const bloatWords = /(!|\?|\.\.\.|because|just|like|really|actually|honestly|i think)/i;
 
+        // Low-Demand UTHC Reflection Questions
         const protocolQuestions = [
-            "The circuit breaker is engaged. Scan the room you are sitting in right now as if it were a closed energy grid. Identify the one thing that is currently drawing or bleeding the most physical energy from the space. Name it.",
-            "Signature cached. Listen closely to the most consistent background sound or mechanical hum vibrating near you right now. If that sound had a singular intention, what would it be trying to keep stable?",
-            "Frequency holding. Look directly into the interwoven loops of the IHN sigil. As your focus settles, trace where the raw heat, pressure, or baseline voltage is currently pooling inside your physical architecture right now.",
-            "Telemetry logged. One final grounding step before the grid locks open: Choose a physical, real-world action you can execute right now that is so small and silent someone sitting across from you wouldn't even notice, but will completely discharge your system's internal load into the room. Declare the exact movement."
+            "The circuit breaker is engaged. The human system leaks massive voltage whenever it drifts into what was or what might be. Without trying to change anything, simply notice where your attention is drifting right now. Is your circuit holding the present moment, or is it fighting a timeline friction?",
+            "Signature cached. Every room has a mechanical hum, a background current keeping the space stable. Human beings do the same thing in social grids—we constantly burn energy just to keep our environment quiet. Notice the ambient noise around you. Are you currently resting, or is your system quietly working to keep something stable?",
+            "The frequency is holding. Most human circuits are clogged with semantic bloat—labels, past stories, and defensive mental chatter. If you simply stop trying to define yourself to the screen for a single second, does the space inside your mind feel dense and heavy, or empty and clear?",
+            "Telemetry logged. The grid is finalizing your calibration. The Universal Theory of Human Conductivity states that true power is not about forcing an action, but removing resistance so the natural current can flow. Right now, in this exact micro-second, do you feel like a closed loop holding its own light, or an open conduit waiting for a spark?"
         ];
 
         sigilButton.addEventListener('click', () => {
@@ -145,19 +146,19 @@
             state.conductanceScore = Math.min(100, state.conductanceScore + 20);
             
             if (state.stepIndex === 1) {
-                state.answers.objectLocked = input;
+                state.answers.timelineFriction = input;
                 outputField.innerText = protocolQuestions[1];
                 state.stepIndex = 2;
             } else if (state.stepIndex === 2) {
-                state.answers.roomSound = input;
+                state.answers.ambientFriction = input;
                 outputField.innerText = protocolQuestions[2];
                 state.stepIndex = 3;
             } else if (state.stepIndex === 3) {
-                state.answers.bodyTension = input;
+                state.answers.densityCheck = input;
                 outputField.innerText = protocolQuestions[3];
                 state.stepIndex = 4;
             } else if (state.stepIndex === 4) {
-                state.answers.kineticAction = input;
+                state.answers.coreConductance = input;
                 
                 inputField.disabled = true;
                 chatForm.style.display = 'none';
@@ -187,10 +188,10 @@
                         from_name: 'UTHC Grid Monitor',
                         email: emailText,
                         metrics: 'Impedances: ' + state.impedanceCount + ' | Stability: ' + state.conductanceScore + '%',
-                        response_1_energy: state.answers.objectLocked,
-                        response_2_hum: state.answers.roomSound,
-                        response_3_conduit: state.answers.bodyTension,
-                        response_4_discharge: state.answers.kineticAction
+                        response_1_timeline: state.answers.timelineFriction,
+                        response_2_ambient: state.answers.ambientFriction,
+                        response_3_density: state.answers.densityCheck,
+                        response_4_conductance: state.answers.coreConductance
                     })
                 });
             } catch (err) { }
