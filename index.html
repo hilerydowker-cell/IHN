@@ -28,4 +28,175 @@
             animation: pulse 4s infinite ease-in-out;
         }
         @keyframes pulse {
-            0% { opacity: 0.6; filter: drop-shadow(0 0 5
+            0% { opacity: 0.6; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 25px rgba(255,255,255,0.5)); }
+            100% { opacity: 0.6; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+        }
+        .output-text {
+            font-size: 14px; line-height: 1.6; text-align: center;
+            min-height: 140px; margin-bottom: 30px; color: #e0e0e0;
+            white-space: pre-line;
+        }
+        form { width: 100%; display: flex; justify-content: center; }
+        .input-box {
+            width: 100%; background: transparent; border: none;
+            border-bottom: 1px solid #222222; color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px; padding: 10px; text-align: center;
+            outline: none; transition: border-color 0.4s ease;
+        }
+        .input-box:focus { border-color: #ffffff; }
+        #emailInput { display: none; border-bottom: 1px solid #ffffff; }
+    </style>
+</head>
+<body>
+
+    <div class="interface-container">
+        <div class="sigil-box" id="sigilButton">
+            <img src="1000010700.png" alt="IHN Sigil Circuit">
+        </div>
+        
+        <div class="output-text" id="guideOutput">The circuit is dark. Break the silence.</div>
+        
+        <form id="chatForm" onsubmit="return false;">
+            <input type="text" id="userInput" class="input-box" autofocus autocomplete="off" enterkeyhint="go">
+        </form>
+        
+        <form id="emailForm" onsubmit="return false;">
+            <input type="email" id="emailInput" class="input-box" placeholder="your.handle@email.com" autocomplete="off" enterkeyhint="done">
+        </form>
+    </div>
+
+    <script>
+        let state = {
+            initialized: false,
+            conductanceScore: 20,
+            stepIndex: 0, 
+            impedanceCount: 0,
+            answers: {
+                objectLocked: "",
+                roomSound: "",
+                bodyTension: "",
+                kineticAction: ""
+            }
+        };
+
+        const outputField = document.getElementById('guideOutput');
+        const inputField = document.getElementById('userInput');
+        const emailField = document.getElementById('emailInput');
+        const chatForm = document.getElementById('chatForm');
+        const emailForm = document.getElementById('emailForm');
+        const sigilButton = document.getElementById('sigilButton');
+
+        const pastWords = /\b(yesterday|was|remember|happened|used to|then|ago|before)\b/i;
+        const futureWords = /\b(tomorrow|next week|will happen|what if|going to|hope|plan)\b/i;
+        const bloatWords = /(!|\?|\.\.\.|because|just|like|really|actually|honestly|i think)/i;
+
+        const protocolQuestions = [
+            "The circuit breaker is engaged. Scan the room you are sitting in right now as if it were a closed energy grid. Identify the one thing that is currently drawing or bleeding the most physical energy from the space. Name it.",
+            "Signature cached. Listen closely to the most consistent background sound or mechanical hum vibrating near you right now. If that sound had a singular intention, what would it be trying to keep stable?",
+            "Frequency holding. Look directly into the interwoven loops of the IHN sigil. As your focus settles, trace where the raw heat, pressure, or baseline voltage is currently pooling inside your physical architecture right now.",
+            "Telemetry logged. One final grounding step before the grid locks open: Choose a physical, real-world action you can execute right now that is so small and silent someone sitting across from you wouldn't even notice, but will completely discharge your system's internal load into the room. Declare the exact movement."
+        ];
+
+        sigilButton.addEventListener('click', () => {
+            if (!state.initialized) handleCircuitEngine("");
+            else inputField.focus();
+        });
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = inputField.value.trim();
+            inputField.value = '';
+            handleCircuitEngine(text);
+        });
+
+        function handleCircuitEngine(input) {
+            if (!state.initialized) {
+                state.initialized = true;
+                outputField.innerText = protocolQuestions[0];
+                state.stepIndex = 1;
+                return;
+            }
+
+            if (!input) return;
+
+            let failure = false;
+            let reason = "";
+
+            if (pastWords.test(input)) {
+                failure = true;
+                reason = "Chronological leak detected: You are dragging old data loops into the present workspace. The circuit rejects past narratives. Ground your message.";
+            } else if (futureWords.test(input)) {
+                failure = true;
+                reason = "Chronological leak detected: You are projecting voltage into a future that does not exist. The static is grounding out. Clear tomorrow out of your input.";
+            } else if (bloatWords.test(input) || input.split(' ').length > 12 || input.length < 3) {
+                failure = true;
+                reason = "Semantic bloat or low data density detected. The conduit requires pure, stripped, present-moment data. Try again with fewer, cleaner words.";
+            }
+
+            if (failure) {
+                state.conductanceScore = Math.max(0, state.conductanceScore - 20);
+                state.impedanceCount++;
+                outputField.innerText = reason + "\n\nCurrent Alignment Stability: " + state.conductanceScore + "%.";
+                return;
+            }
+
+            state.conductanceScore = Math.min(100, state.conductanceScore + 20);
+            
+            if (state.stepIndex === 1) {
+                state.answers.objectLocked = input;
+                outputField.innerText = protocolQuestions[1];
+                state.stepIndex = 2;
+            } else if (state.stepIndex === 2) {
+                state.answers.roomSound = input;
+                outputField.innerText = protocolQuestions[2];
+                state.stepIndex = 3;
+            } else if (state.stepIndex === 3) {
+                state.answers.bodyTension = input;
+                outputField.innerText = protocolQuestions[3];
+                state.stepIndex = 4;
+            } else if (state.stepIndex === 4) {
+                state.answers.kineticAction = input;
+                
+                inputField.disabled = true;
+                chatForm.style.display = 'none';
+                emailField.style.display = 'block';
+                
+                outputField.innerText = "The operational loop is complete. All metrics logged. The current has been successfully directed into your space. To permanently ground your system's telemetry and lock open the passage to the Inner Court, input a single secure routing coordinate [Email/Handle] before the terminal goes dark.";
+                setTimeout(() => emailField.focus(), 150);
+            }
+        }
+
+        emailForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailText = emailField.value.trim();
+            if (!emailText) return;
+
+            emailField.disabled = true;
+            emailField.style.display = 'none';
+            outputField.innerText = "Transmitting telemetry signatures to the central grid registry...";
+
+            try {
+                await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        access_key: '43929ea7-8f8a-45e5-8c42-115c0a3d3a73', 
+                        subject: 'NEW IHN THRESHOLD GRADUATE',
+                        from_name: 'UTHC Grid Monitor',
+                        email: emailText,
+                        metrics: 'Impedances: ' + state.impedanceCount + ' | Stability: ' + state.conductanceScore + '%',
+                        response_1_energy: state.answers.objectLocked,
+                        response_2_hum: state.answers.roomSound,
+                        response_3_conduit: state.answers.bodyTension,
+                        response_4_discharge: state.answers.kineticAction
+                    })
+                });
+            } catch (err) { }
+
+            outputField.innerText = "Coordinates anchored. Terminal locked in high-conductance alignment. Proceed to real-world deployment. Invite token generated. A secondary frequency link will be routed to " + emailText + " if your system telemetry matches the grid criteria. [IHN-LEVEL-COMPLETED]";
+        });
+    </script>
+</body>
+</html>
